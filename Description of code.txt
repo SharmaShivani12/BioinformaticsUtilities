@@ -1,0 +1,65 @@
+/////Description of code//////
+
+1_ def read_fasta(filepath):
+
+The provided Python function, read_fasta, is designed to read a FASTA file and extract sequences from it. Here's a step-by-step explanation of how the function works:
+
+Function Definition: The function read_fasta takes one argument, filepath, which is the path to the FASTA file that needs to be read.
+
+Opening and Reading the File:
+
+The with open(filepath, 'r') as file: line opens the file specified by filepath in read mode ('r'). The with statement ensures that the file is properly closed after its suite finishes, even if an error occurs.
+contents = file.read() reads the entire content of the file into a single string called contents.
+Initialize a Dictionary:
+
+sequences = {} initializes an empty dictionary called sequences. This will be used to store the sequences from the FASTA file, with the sequence identifier as the key and the sequence itself as the value.
+Processing the FASTA Data:
+
+for part in contents.split('>')[1:]: splits the contents string at each '>' character and iterates over each part starting from the second element (index 1). The first element is skipped because splitting at '>' results in an empty string before the first > in the file.
+Each part represents a single sequence in the FASTA format, which includes an identifier line followed by one or more lines containing the sequence.
+Extracting Identifier and Sequence:
+
+lines = part.split('\n') splits the part into individual lines.
+identifier = lines[0].split()[0] extracts the first line (which contains the identifier and possibly a description), splits it by whitespace, and takes the first element as the identifier. This is a common practice to ignore the description that might follow the identifier.
+sequence = ''.join(lines[1:]) joins all the lines except the first (which contains the identifier and description) into a single string, forming the complete sequence.
+Storing the Identifier and Sequence:
+
+sequences[identifier] = sequence assigns the sequence to its corresponding identifier in the sequences dictionary.
+Return the Dictionary:
+
+return sequences returns the dictionary containing all the sequences from the FASTA file, with identifiers as keys and sequences as values.
+
+__________________________________________________________________________________________________________________
+
+
+2_def find_orfs(sequence):
+
+
+Function Definition: The function find_orfs takes one argument, sequence, which is a string representing a DNA sequence in which you want to find ORFs.
+
+Initializing Variables:
+
+start_codon = 'ATG' sets the start codon as 'ATG', which is the common start codon in DNA sequences that signals the beginning of an ORF.
+stop_codons = ['TAA', 'TAG', 'TGA'] defines a list of stop codons. These codons signal the end of an ORF in a DNA sequence.
+orfs = [] initializes an empty list where the ORFs found will be stored.
+Finding Start Codons:
+
+The outer for loop for i in range(0, len(sequence), 3): iterates through the sequence in steps of 3 to ensure it reads codons (a codon consists of three nucleotides). This loop checks each triplet in the sequence to find start codons.
+codon = sequence[i:i+3] extracts a codon starting from the index i.
+if codon == start_codon: checks if the extracted codon is a start codon.
+Finding Stop Codons:
+
+If a start codon is found, the nested for loop for j in range(i+3, len(sequence), 3): begins looking for a stop codon. It starts from the position immediately after the start codon (i+3) and continues in steps of 3.
+if sequence[j:j+3] in stop_codons: checks each codon from the position j to see if it matches any of the defined stop codons.
+Recording the ORF:
+
+Once a stop codon is found, orfs.append((i, sequence[i:j+3])) appends a tuple to the orfs list. This tuple contains the starting index of the ORF and the DNA sequence from the start codon to the stop codon (inclusive of the stop codon).
+Exit the Inner Loop:
+
+break is used to exit the inner loop once a stop codon is found. This is because the search for a stop codon should stop once the first valid stop codon is encountered after a start codon.
+Returning the Results:
+
+return orfs returns the list of ORFs found. Each ORF is represented as a tuple containing the start index and the sequence of the ORF.
+This function effectively identifies all ORFs in a given DNA sequence.
+
+_________________________________________________________________________________________________________________
